@@ -1,1 +1,1 @@
-<h3>Matlab simulations</h3>Modulations: QPSK, 16QAM and OOKARQ methods: Stop & WaitExecute in the main.m file
+<h3>Matlab simulations</h3><div>Modulations: QPSK, 16QAM and OOK</div><div>ARQ methods: Stop & Wait</div><div>Execute in the main.m file</div>
