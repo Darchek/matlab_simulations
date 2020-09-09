@@ -1,0 +1,29 @@
+
+addpath('../crc32');
+addpath('../modulations');
+addpath('../arq_methods/no_method');
+addpath('../arq_methods/stop_and_wait');
+
+global N;
+global PACKET_LENGTH;
+global MODULATION;
+global N_ifft;
+global bps;
+
+N = 10^4;
+PACKET_LENGTH = 96;         % bytes
+MODULATION = '64QAM';        % 'QPSK, 16QAM, 64QAM
+N_ifft = 64;
+bps = bits_per_symbol();
+
+EbNodB = -10:1:15;
+
+
+for n = 1:length(EbNodB)
+    
+	send_message_OFDM(EbNodB(n));
+
+end
+
+
+

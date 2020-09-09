@@ -20,7 +20,7 @@ for i = 1:length(EbNodB)
     per_te = calc_PER(EbNodB(i), (PACKET_LENGTH + 4) * 8, MODULATION);
     
     if per_te ~= 1
-        [p_correct, p_wrong, seconds] = send_message_stop_and_wait(EbNodB(i), PACKET_LENGTH, MODULATION);
+        [p_correct, p_wrong, seconds] = send_message_no_arq(EbNodB(i), PACKET_LENGTH, MODULATION);
         per_ex = (p_wrong / (p_correct + p_wrong));
 
         tght = ((p_correct * PACKET_LENGTH * 8)/ seconds) / 1000;

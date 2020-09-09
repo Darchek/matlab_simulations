@@ -1,17 +1,16 @@
+function [p_goods, p_bad] = send_message_stop_and_wait(EBN0_dB, PACKET_LENGTH, MODULATION, N, MAX_COUNT)
 
-function [p_goods, p_bad, seconds] = send_message_stop_and_wait(EBN0_dB, PACKET_LENGTH, MODULATION)
-
-    text_file = fileread('sample_file_short.txt');
-    message = uint8(text_file);
+    % text_file = fileread('sample_file_short.txt');
+    byte_values = randsrc(1, N, (0:1:255));
+    message = uint8(byte_values);
     result = zeros(1, ceil(length(message) / PACKET_LENGTH));
    	n = 1;
     count = 0;
-    tic;
     
 %	p_bar = waitbar(0, 'Loading...');
     while n <= length(message)
         packet_96 = create_packet(message, n, PACKET_LENGTH);
-        crc = crc32_slow(packet_96);
+        crc = get_crc32(packet_96);
         tx_packet = [packet_96, crc];
         
         % Without TimeOut(TO)
@@ -35,7 +34,7 @@ function [p_goods, p_bad, seconds] = send_message_stop_and_wait(EBN0_dB, PACKET_
             % disp([num2str(index), '. Error in ACK --> ', num2str(a)]);
         end
         
-        if count == 5
+        if count == MAX_COUNT
             result(index) = 0;
             n = n + PACKET_LENGTH;
             count = 0;
@@ -48,7 +47,6 @@ function [p_goods, p_bad, seconds] = send_message_stop_and_wait(EBN0_dB, PACKET_
     
 %	close(p_bar);
 
-    seconds = toc;
     p_goods = size(strfind(result, 1), 2);
     p_bad = size(strfind(result, 0), 2);
 end

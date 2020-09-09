@@ -1,5 +1,6 @@
-function crc = crc32_slow(data)
+function crc = check_crc32(data, crc_to_check)
 
+crc_to_check = typecast(crc_to_check, 'uint32');
 crc  = uint32(hex2dec('FFFFFFFF'));
 poly = uint32(hex2dec('EDB88320'));     % hex EDB88320 CRC32 polynomial
 data = uint8(data);
@@ -17,5 +18,6 @@ for i = 1:length(data)
     end
 end
 crc = bitcmp(crc);                  % crc as 1x1 uint 32
-crc = typecast(crc, 'uint8');         % crc as 1x4 uint 8
+crc = bitxor(crc, crc_to_check); 
+
 

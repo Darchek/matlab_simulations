@@ -1,10 +1,9 @@
 
-function [p_goods, p_bad, seconds] = send_message_no_arq(EBN0_dB, PACKET_LENGTH, MODULATION)
-
-    tic;
-
-    text_file = fileread('sample_file_short.txt');
-    message = uint8(text_file);
+function [p_goods, p_bad] = send_message_no_arq(EBN0_dB, PACKET_LENGTH, MODULATION, N)
+    
+    % text_file = fileread('sample_file_short.txt');
+    byte_values = randsrc(1, N, (0:1:255));
+    message = uint8(byte_values);
     result = zeros(1, ceil(length(message) / PACKET_LENGTH));
    	n = 1;
     
@@ -20,7 +19,6 @@ function [p_goods, p_bad, seconds] = send_message_no_arq(EBN0_dB, PACKET_LENGTH,
         n = n + PACKET_LENGTH;
     end
     
-    seconds = toc;
     p_goods = size(strfind(result, 1), 2);
     p_bad = size(strfind(result, 0), 2);
 end

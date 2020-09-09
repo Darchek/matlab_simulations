@@ -1,4 +1,4 @@
-function per = calc_PER(EBN0_dB, N, modulation)
+function per = calc_PER(EBN0_dB, N, modulation, COUNT)
     % N -> Number of bits
 	EbNo = 10^(EBN0_dB/10);
     
@@ -12,4 +12,5 @@ function per = calc_PER(EBN0_dB, N, modulation)
         ber = (1/2)*erfc(sqrt(EbNo/4));
     end
 	per = 1 - (1 - ber)^N;
+    per = per^COUNT;
 end
