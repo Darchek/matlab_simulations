@@ -1,5 +1,7 @@
 
-function result = send_packet_no_arq(tx_packet, EBN0_dB, PACKET_LENGTH, MODULATION)
+function result = send_packet_no_arq(tx_packet, EBN0_dB, PACKET_LENGTH)
+
+    global MODULATION;
     
 	% Modulation Block
     if contains(MODULATION, 'QPSK')
@@ -11,7 +13,7 @@ function result = send_packet_no_arq(tx_packet, EBN0_dB, PACKET_LENGTH, MODULATI
     end
 
 	% Channel
-	signal_plus_noise = channel_AWGN(signal, EBN0_dB, MODULATION);
+	signal_plus_noise = channel_AWGN(signal, EBN0_dB);
 
 	% Demodulation Block
     if contains(MODULATION, 'QPSK')
@@ -21,7 +23,6 @@ function result = send_packet_no_arq(tx_packet, EBN0_dB, PACKET_LENGTH, MODULATI
     elseif contains(MODULATION, 'OOK')
         rx_packet = demodulation_OOK(signal_plus_noise);
     end
-    
     
     % Check CRC
     result = receive_packet(rx_packet, PACKET_LENGTH);

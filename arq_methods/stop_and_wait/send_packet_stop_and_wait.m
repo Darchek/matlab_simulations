@@ -1,5 +1,7 @@
 
-function result = send_packet_stop_and_wait(tx_packet, EBN0_dB, PACKET_LENGTH, MODULATION)
+function result = send_packet_stop_and_wait(tx_packet, EBN0_dB)
+
+	global MODULATION;    
 
 	% Modulation Block
     if contains(MODULATION, 'QPSK')
@@ -11,7 +13,7 @@ function result = send_packet_stop_and_wait(tx_packet, EBN0_dB, PACKET_LENGTH, M
     end
 
 	% Channel
-	signal_plus_noise = channel_AWGN(signal, EBN0_dB, MODULATION);
+	signal_plus_noise = channel_AWGN(signal, EBN0_dB);
 
 	% Demodulation Block
     if contains(MODULATION, 'QPSK')
@@ -23,6 +25,6 @@ function result = send_packet_stop_and_wait(tx_packet, EBN0_dB, PACKET_LENGTH, M
     end
     
     % Check CRC
-    res = receive_packet(rx_packet, PACKET_LENGTH);
-    result = stop_and_wait_RX(res, EBN0_dB, MODULATION);
+    res = receive_packet(rx_packet);
+    result = stop_and_wait_RX(res, EBN0_dB);
 end

@@ -1,5 +1,9 @@
-function [p_goods, p_bad] = send_message_stop_and_wait(EBN0_dB, PACKET_LENGTH, MODULATION, N, MAX_COUNT)
+function [p_goods, p_bad] = send_message_stop_and_wait(EBN0_dB)
 
+    global N;
+    global PACKET_LENGTH;
+    global MAX_COUNT;
+    
     % text_file = fileread('sample_file_short.txt');
     byte_values = randsrc(1, N, (0:1:255));
     message = uint8(byte_values);
@@ -9,12 +13,12 @@ function [p_goods, p_bad] = send_message_stop_and_wait(EBN0_dB, PACKET_LENGTH, M
     
 %	p_bar = waitbar(0, 'Loading...');
     while n <= length(message)
-        packet_96 = create_packet(message, n, PACKET_LENGTH);
+        packet_96 = create_packet(message, n);
         crc = get_crc32(packet_96);
         tx_packet = [packet_96, crc];
         
         % Without TimeOut(TO)
-        res = send_packet_stop_and_wait(tx_packet, EBN0_dB, PACKET_LENGTH, MODULATION);
+        res = send_packet_stop_and_wait(tx_packet, EBN0_dB);
         
         % With TimeOut(TO)
         % f = parfeval(@send_packet_stop_and_wait, 1, tx_packet, EBN0_dB, PACKET_LENGTH, MODULATION);

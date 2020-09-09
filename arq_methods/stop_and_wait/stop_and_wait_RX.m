@@ -1,5 +1,6 @@
-function arq_packet = stop_and_wait_RX(res, EBN0_dB, MODULATION)
+function arq_packet = stop_and_wait_RX(res, EBN0_dB)
 
+	global MODULATION;    
     % ARQ method - RX - STOP & WAIT - Send ACK to transmitter
     
     ack = uint8(6);     % res = 1 (Good)
@@ -21,7 +22,7 @@ function arq_packet = stop_and_wait_RX(res, EBN0_dB, MODULATION)
     end
     
 	% Channel
-    signal_plus_noise = channel_AWGN(signal, EBN0_dB, MODULATION);
+    signal_plus_noise = channel_AWGN(signal, EBN0_dB);
     
     % Demodulation Block
     if contains(MODULATION, 'QPSK')

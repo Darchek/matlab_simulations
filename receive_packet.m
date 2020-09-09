@@ -1,4 +1,7 @@
-function res = receive_packet(packet, PACKET_LENGTH)
+function res = receive_packet(packet)
+
+    global PACKET_LENGTH;
+    
     message = packet(1:PACKET_LENGTH);
     crc = packet(PACKET_LENGTH + 1:PACKET_LENGTH + 4);
     res = check_crc32(message, crc);
