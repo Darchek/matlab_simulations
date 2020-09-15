@@ -19,6 +19,8 @@ function arq_packet = stop_and_wait_RX(res, EBN0_dB)
         signal = modulation_16QAM(toSend);
     elseif contains(MODULATION, 'OOK')
         signal = modulation_OOK(toSend);
+    elseif contains(MODULATION, '64QAM')
+        signal = modulation_64QAM(toSend);
     end
     
 	% Channel
@@ -31,6 +33,8 @@ function arq_packet = stop_and_wait_RX(res, EBN0_dB)
         arq_packet = demodulation_16QAM(signal_plus_noise);
     elseif contains(MODULATION, 'OOK')
         arq_packet = demodulation_OOK(signal_plus_noise);
+    elseif contains(MODULATION, '64QAM')
+        arq_packet = demodulation_64QAM(signal_plus_noise);
     end
     
 end

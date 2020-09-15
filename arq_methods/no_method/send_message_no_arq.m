@@ -1,5 +1,8 @@
 
-function [p_goods, p_bad] = send_message_no_arq(EBN0_dB, PACKET_LENGTH, MODULATION, N)
+function [p_goods, p_bad] = send_message_no_arq(EBN0_dB)
+
+    global N;
+    global PACKET_LENGTH;
     
     % text_file = fileread('sample_file_short.txt');
     byte_values = randsrc(1, N, (0:1:255));
@@ -8,11 +11,11 @@ function [p_goods, p_bad] = send_message_no_arq(EBN0_dB, PACKET_LENGTH, MODULATI
    	n = 1;
     
     while n <= length(message)
-        packet_96 = create_packet(message, n, PACKET_LENGTH);
-        crc = crc32_slow(packet_96);
+        packet_96 = create_packet(message, n);
+        crc = get_crc32(packet_96);
         tx_packet = [packet_96, crc];
         
-        a = send_packet_no_arq(tx_packet, EBN0_dB, PACKET_LENGTH, MODULATION);
+        a = send_packet_no_arq(tx_packet, EBN0_dB);
 
         index = ceil(n / PACKET_LENGTH);
         result(index) = a;

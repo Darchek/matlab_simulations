@@ -10,6 +10,8 @@ function result = send_packet_stop_and_wait(tx_packet, EBN0_dB)
         signal = modulation_16QAM(tx_packet);
     elseif contains(MODULATION, 'OOK')
         signal = modulation_OOK(tx_packet);
+    elseif contains(MODULATION, '64QAM')
+        signal = modulation_64QAM(tx_packet);
     end
 
 	% Channel
@@ -22,6 +24,8 @@ function result = send_packet_stop_and_wait(tx_packet, EBN0_dB)
         rx_packet = demodulation_16QAM(signal_plus_noise);
     elseif contains(MODULATION, 'OOK')
         rx_packet = demodulation_OOK(signal_plus_noise);
+    elseif contains(MODULATION, '64QAM')
+        rx_packet = demodulation_64QAM(signal_plus_noise);
     end
     
     % Check CRC

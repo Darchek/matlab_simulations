@@ -1,4 +1,4 @@
-function [p_goods, p_bad, mean_retrys] = send_message_stop_and_wait(EBN0_dB)
+function mean_retrys = send_message_stop_and_wait(EBN0_dB)
 
     global N;
     global PACKET_LENGTH;
@@ -13,7 +13,8 @@ function [p_goods, p_bad, mean_retrys] = send_message_stop_and_wait(EBN0_dB)
    	n = 1;
 
     total_count = 0;
-    count = 1;
+    count = 0;
+    num_packets = 0;
         
 %	p_bar = waitbar(0, 'Loading...');
     while n <= length(message)
@@ -33,7 +34,8 @@ function [p_goods, p_bad, mean_retrys] = send_message_stop_and_wait(EBN0_dB)
             result(index) = 1;
             n = n + PACKET_LENGTH;
             total_count = total_count + count;
-            count = 1;
+            num_packets = num_packets + 1;
+            count = 0;
         elseif res == 15                  % NACK - REPEAT
             result(index) = 0;
             count = count + 1;
@@ -47,7 +49,8 @@ function [p_goods, p_bad, mean_retrys] = send_message_stop_and_wait(EBN0_dB)
             total_count = total_count + count;
             result(index) = 0;
             n = n + PACKET_LENGTH;
-            count = 1;
+            num_packets = num_packets + 1;
+            count = 0;
             % disp(['4 times, packet number ', num2str(index), ' is lost']);
         end
         
@@ -56,9 +59,8 @@ function [p_goods, p_bad, mean_retrys] = send_message_stop_and_wait(EBN0_dB)
     end
     
 %     close(p_bar);
-    
-    p_goods = size(strfind(result, 1), 2);
-    p_bad = size(strfind(result, 0), 2);
+%     p_goods = size(strfind(result, 1), 2);
+%     p_bad = size(strfind(result, 0), 2);
     
     p_num = ceil(length(message) / PACKET_LENGTH);
     mean_retrys = total_count / p_num;

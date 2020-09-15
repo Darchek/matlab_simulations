@@ -31,21 +31,17 @@ for n = 1:length(EbNodB)
     bler_theoric(n) = calc_PER(EbNodB(n));
     retry_theoric(n) = 1 / (1 - bler_theoric(n));
     
-    if retry_theoric(n) > MAX_COUNT * 100
-        retry_theoric(n) = MAX_COUNT * 100;
-    end
-    
     if bler_theoric(n) < 1 && bler_theoric(n) > 10^-15
 
-        % [p_correct, p_wrong] = send_message_no_arq(EbNodB(n));
-        [p_correct, p_wrong, retry_simulat(n)] = send_message_stop_and_wait(EbNodB(n));
-        bler_simulat(n) = (p_wrong / (p_correct + p_wrong));
+        [p_goods, p_bad, retry_simulat(n)] = send_message_no_arq(EbNodB(n));
+        
+%         bler_simulat(n) = (p_wrong / (p_correct + p_wrong));
+
         disp(['EbNo(dB): ', num2str(EbNodB(n)), ' - Retrys: ', num2str(retry_simulat(n)), ' - Retrys_Threorical: ', num2str(retry_theoric(n))]);
          
     elseif bler_theoric(n) >= 1
         min_ebn0 = EbNodB(n);
         retry_simulat(n) = 0;
-        bler_simulat(n) = 0;
     elseif bler_theoric(n) <= 10^-15
         max_ebn0 = EbNodB(n);
         disp(['EbNo(dB): ', num2str(EbNodB(n)), ' - Nothing']);

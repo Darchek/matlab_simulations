@@ -9,7 +9,10 @@ function ber = send_message_OFDM(EBN0_dB)
     byte_values = randsrc(1, N, (0:1:255));
     message = uint8(byte_values);
 
-    errors = 0;
+    errors_1 = 0;
+    errors_2 = 0;
+    errors_3 = 0;
+        
     for n = 1:(N_ifft * bps) / 8:length(message)
         if n - 1 + (N_ifft * bps) / 8 > N
             input = message(n:N);
@@ -26,30 +29,32 @@ function ber = send_message_OFDM(EBN0_dB)
         end
         
         signal = ifft(mod_input);
-        max_value = max(max(abs(signal)));
-        signal = signal ./ max_value;
+        % max_value = max(max(abs(signal)));
+        % signal = signal ./ max_value;
+        signal = signal ./ sqrt(N_ifft);
         
-        signal_plus_noise = channel_AWGN(signal, EBN0_dB);
+        xrms = rms(signal);
+%         A = (10 ^ (9 / 20)) * xrms; 
+%         signal_clipped = ((abs(signal) > A) * A).*exp(1i * angle(signal)) + (abs(signal) <= A).*signal;
+        xclippedrms = rms(signal_clipped); 
+        
+        signal_plus_noise = channel_AWGN(signal_clipped / xclippedrms, EBN0_dB);
         % stem(1:N_ifft, real(signal_plus_noise));
+        % stem(1:N_ifft, imag(signal_plus_noise));
         
-        output = fft(signal_plus_noise) * max_value;
+        % output = fft(signal_plus_noise) * max_value;
+        % output = fft(signal_plus_noise) / sqrt(N_ifft / 2);
+        output = fft(signal_plus_noise) * sqrt(N_ifft) * xclippedrms;
         
         
-        % errors = errors + calculate_ber(mod_input, output);
-        
-        if contains(MODULATION, 'QPSK')
-            demod_output = demodulation_QPSK(output);
-        elseif contains(MODULATION, '16QAM')
-            demod_output = demodulation_16QAM(output);
-        elseif contains(MODULATION, '64QAM')
-            demod_output = demodulation_64QAM(output);
-        end
-        
-        errors = errors + sum((input == demod_output) == 0);
+        errors_1 = errors_1 + calculate_ber_option_1(mod_input, output);  % symbols
+%       errors_2 = errors_2 + calculate_ber_option_2(mod_input, output);
+%       errors_3 = errors_3 + calculate_ber_option_3(input, output);      % bytes
+
+    
     end
     
-    % ber = (errors / N) / bps;
-    ber = (errors / N) / 8;
-    disp(['EBN0: ', num2str(EBN0_dB), '   ->   BER: ', num2str(ber)]);
+    ser = errors_1 / (N * (8 / bps)); 
+    ber = ser / bps;
     
 end
